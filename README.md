@@ -2,4 +2,4 @@
 Bar Stock Exchange
 
 Working on...
-(Kotlin and Java)
+(in Kotlin and Java)
