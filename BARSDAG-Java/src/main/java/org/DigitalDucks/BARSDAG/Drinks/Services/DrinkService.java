@@ -11,5 +11,9 @@ public interface DrinkService {
     Drink getDrinkById(Long id);
     List<Drink> getAllDrinks();
 
+    Drink getDrinkByName(String name);
+
     DrinkDTO convertToDTO(Drink drink);
+
+    String sellDrink(Long drinkId, int quantity);
 }

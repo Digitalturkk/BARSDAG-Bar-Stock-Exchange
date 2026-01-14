@@ -1,10 +1,12 @@
 package org.DigitalDucks.BARSDAG.Sales.Servies;
 
+import org.DigitalDucks.BARSDAG.Drinks.Drink;
 import org.DigitalDucks.BARSDAG.Sales.Sale;
 import org.DigitalDucks.BARSDAG.Sales.SaleDTO;
 import org.DigitalDucks.BARSDAG.Sales.SaleRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,5 +46,14 @@ public class SaleServiceImplement implements SaleService {
         dto.setQuantity(sale.getQuantity());
         dto.setSaleTime(sale.getSaleTime());
         return dto;
+    }
+
+    @Override
+    public void createSale(Drink drink, int quantity) {
+        Sale sale = new Sale();
+        sale.setDrink(drink);
+        sale.setQuantity(quantity);
+        sale.setSaleTime(LocalDateTime.now());
+        saveSale(sale);
     }
 }
