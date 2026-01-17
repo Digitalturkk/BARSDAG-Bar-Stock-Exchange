@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("SELECT SUM(s.quantity) FROM Sale s WHERE s.saleTime >= :start AND s.saleTime <= :end")
