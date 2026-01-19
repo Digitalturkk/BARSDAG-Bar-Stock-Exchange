@@ -11,7 +11,7 @@ public interface SaleService {
     void deleteSale(Long id);
     Sale getSaleById(Long id);
     List<Sale> getAllSales();
-    void createSale(Drink drink, int quantity);
+    void createSale(Drink drink, Integer quantity);
 
     SaleDTO convertToDTO(Sale sale);
 }

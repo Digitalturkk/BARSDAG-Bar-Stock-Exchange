@@ -49,7 +49,7 @@ public class SaleServiceImplement implements SaleService {
     }
 
     @Override
-    public void createSale(Drink drink, int quantity) {
+    public void createSale(Drink drink, Integer quantity) {
         Sale sale = new Sale();
         sale.setDrink(drink);
         sale.setQuantity(quantity);
