@@ -4,10 +4,13 @@ import org.DigitalDucks.BARSDAG.Drinks.Drink;
 import org.DigitalDucks.BARSDAG.Drinks.DrinkDTO;
 import org.DigitalDucks.BARSDAG.Drinks.DrinkRepository;
 import org.DigitalDucks.BARSDAG.Sales.SaleRepository;
-import org.DigitalDucks.BARSDAG.Sales.Servies.SaleService;
+import org.DigitalDucks.BARSDAG.Sales.Serviсes.SaleService;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +25,8 @@ public class DrinkServiceImplement implements DrinkService {
         this.saleService = saleService;
         this.drinkRepository = drinkRepository;
     }
+
+    // Basic CRUD operations
 
     @Override
     public void saveDrink(Drink drink) {
@@ -60,19 +65,87 @@ public class DrinkServiceImplement implements DrinkService {
         return dto;
     }
 
+    // Business logic
+
     @Override
-    public String sellDrink(Long drinkId, int quantity) {
+    public String sellDrink(Long drinkId, Integer quantity) {
         Drink drink = getDrinkById(drinkId);
-        if (drink == null) {
-            return "Drink not found.";
-        }
-        if (quantity <= 0) {
-            return "Quantity must be greater than zero.";
-        }
+        // List<Sale> drinkSales = saleService.getSalesByDrinkId(drinkId);
+        // Sale latestSale = drinkSales.getLast();
+
+        adjustDrinkPriceAfterPurchase(drinkId);
         saleService.createSale(drink, quantity);
-        return "Successfully sold " + quantity + " of " + drink.getName() + ".";
+        return "Successfully sold " + quantity + " of " + drink.getName() + "."
+                +"\nCurrent price: " + drink.getPriceRightNow();
     }
 
+    // Additional methods
+
+        // Price adjustments
+    private void adjustDrinkPriceAfterPurchase(Long drinkId) {
+        Drink drink = getDrinkById(drinkId);
+        List<Drink> allDrinks = getAllDrinks();
+        allDrinks.remove(drink);
+        for(Drink otherDrink : allDrinks) {
+            otherDrink.setPriceRightNow(otherDrink.getPriceRightNow() * 0.98);
+            saveDrink(otherDrink);
+        }
+        drink.setPriceRightNow(drink.getPriceRightNow() * 1.02);
+        saveDrink(drink);
+    }
+
+    //  Логические ошибки:
+    //Строка 119 — условие неполное. Когда salesInLast10Minutes < 3, цена снижается только если currentPrice >= openPrice, но это противоречиво — при низких продажах цена должна снижаться независимо от текущей цены.
+    //Строка 125 — отсутствует условие на минимальную цену для повышения. При salesInLast10Minutes > 7 цена повышается, но нет проверки на минимальную границу.
+    //Строки 114-115 — minPrice и maxPrice вычисляются, но minPrice используется только в строке 119, а maxPrice — только в строке 125. Логика может быть нарушена.
+    //Рекомендации:
+    //Переформулируйте условие в строке 119: цена должна снижаться, если продажи низкие И цена выше минимума
+    //Добавьте проверку на минимальную цену в блоке else if
+    //Рассмотрите необходимость дополнительной валидации перед сохранением
+
+    @Scheduled(fixedRate = 600000) // Every 10 minutes
+    private void adjustDrinkPriceAfterEvery10Minutes() {
+        LocalTime time = LocalTime.now();
+
+        if(time.isAfter(LocalTime.of(12, 0)) && time.isBefore(LocalTime.of(23, 0))) {
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime tenMinutesAgo = now.minusMinutes(10);
+
+            List<Drink> allDrinks = getAllDrinks();
+            List<Drink> drinksToAdjust = new ArrayList<>();
+
+            for(Drink drink : allDrinks) {
+                Integer salesInLast10Minutes = getDrinkSalesInPeriod(drink.getName(), tenMinutesAgo, now);
+
+                Double currentPrice = drink.getPriceRightNow();
+                Double openPrice = drink.getOpenPrice();
+                Double minPrice = openPrice * 0.7;
+                Double maxPrice = openPrice * 1.3;
+
+                boolean adjustmentMade = false;
+
+                if(salesInLast10Minutes < 3 && currentPrice > minPrice) {
+                    if (currentPrice >= openPrice) {
+                        drink.setPriceRightNow(drink.getPriceRightNow() * 0.99);
+                        adjustmentMade = true;
+                    }
+                }
+                else if (salesInLast10Minutes > 7 && currentPrice < maxPrice) {
+                    drink.setPriceRightNow(drink.getPriceRightNow() * 1.01);
+                    adjustmentMade = true;
+                }
+                if (adjustmentMade) {
+                    drinksToAdjust.add(drink);
+                }
+            }
+            if (!drinksToAdjust.isEmpty()){
+                drinkRepository.saveAll(drinksToAdjust);
+            }
+        }
+    }
+
+        // Sales tracking within a specific period
     private Integer getDrinkSalesInPeriod(String drinkName, LocalDateTime start, LocalDateTime end) {
         return saleRepository.countSaleByDrinkName(drinkName, start, end);
     }

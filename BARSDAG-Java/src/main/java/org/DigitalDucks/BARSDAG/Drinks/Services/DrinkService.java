@@ -15,5 +15,5 @@ public interface DrinkService {
 
     DrinkDTO convertToDTO(Drink drink);
 
-    String sellDrink(Long drinkId, int quantity);
+    String sellDrink(Long drinkId, Integer quantity);
 }

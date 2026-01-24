@@ -19,9 +19,9 @@ public class Drink {
     // price variables for opening, current and closing prices
     @NotNull(message = "Open Price is mandatory")
     @Column(nullable = false)
-    private Double OpenPrice;
-    private Double PriceRightNow;
-    private Double ClosedPrice;
+    private Double openPrice;
+    private Double priceRightNow;
+    private Double closedPrice;
 
     public Drink() {
     }
@@ -31,9 +31,9 @@ public class Drink {
         this.id = id;
         this.name = name;
         this.description = description;
-        OpenPrice = openPrice;
-        PriceRightNow = priceRightNow;
-        ClosedPrice = closedPrice;
+        this.openPrice = openPrice;
+        this.priceRightNow = priceRightNow;
+        this.closedPrice = closedPrice;
     }
 
     public Long getId() {
@@ -44,43 +44,43 @@ public class Drink {
         this.id = id;
     }
 
-    public @NotBlank(message = "Name is mandatory") String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotBlank(message = "Name is mandatory") String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public @NotBlank(message = "Description is mandatory") String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(@NotBlank(message = "Description is mandatory") String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
     public Double getOpenPrice() {
-        return OpenPrice;
+        return openPrice;
     }
 
     public void setOpenPrice(Double openPrice) {
-        this.OpenPrice = openPrice;
+        this.openPrice = openPrice;
     }
 
     public Double getPriceRightNow() {
-        return PriceRightNow;
+        return priceRightNow;
     }
 
     public void setPriceRightNow(Double priceRightNow) {
-        PriceRightNow = priceRightNow;
+        this.priceRightNow = priceRightNow;
     }
 
     public Double getClosedPrice() {
-        return ClosedPrice;
+        return closedPrice;
     }
 
     public void setClosedPrice(Double closedPrice) {
-        ClosedPrice = closedPrice;
+        this.closedPrice = closedPrice;
     }
 }

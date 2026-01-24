@@ -1,6 +1,6 @@
 package org.DigitalDucks.BARSDAG.Sales;
 
-import org.DigitalDucks.BARSDAG.Sales.Servies.SaleService;
+import org.DigitalDucks.BARSDAG.Sales.Serviсes.SaleService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

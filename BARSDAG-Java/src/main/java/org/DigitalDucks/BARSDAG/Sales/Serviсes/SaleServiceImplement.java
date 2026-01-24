@@ -1,4 +1,4 @@
-package org.DigitalDucks.BARSDAG.Sales.Servies;
+package org.DigitalDucks.BARSDAG.Sales.Serviсes;
 
 import org.DigitalDucks.BARSDAG.Drinks.Drink;
 import org.DigitalDucks.BARSDAG.Sales.Sale;
@@ -17,6 +17,8 @@ public class SaleServiceImplement implements SaleService {
     public SaleServiceImplement(SaleRepository saleRepository) {
         this.saleRepository = saleRepository;
     }
+
+    // Basic CRUD operations
 
     @Override
     public void saveSale(Sale sale) {
@@ -39,6 +41,11 @@ public class SaleServiceImplement implements SaleService {
     }
 
     @Override
+    public List<Sale> getSalesByDrinkId(Long drinkId) {
+        return saleRepository.findByDrinkId(drinkId);
+    }
+
+    @Override
     public SaleDTO convertToDTO(Sale sale) {
         SaleDTO dto = new SaleDTO();
         dto.setId(sale.getId());
@@ -55,5 +62,12 @@ public class SaleServiceImplement implements SaleService {
         sale.setQuantity(quantity);
         sale.setSaleTime(LocalDateTime.now());
         saveSale(sale);
+    }
+
+    // Business logic
+
+    @Override
+    public Integer countTotalSoldInRange(LocalDateTime start, LocalDateTime end) {
+        return saleRepository.countTotalSoldInRange(start, end);
     }
 }

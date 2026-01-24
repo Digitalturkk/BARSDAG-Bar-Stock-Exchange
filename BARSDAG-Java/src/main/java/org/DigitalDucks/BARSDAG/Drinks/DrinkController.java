@@ -20,9 +20,9 @@ public class DrinkController {
         List<Drink> drinks = drinkService.getAllDrinks();
         return drinks.stream().map(drinkService::convertToDTO).toList();
     }
-    // Change int <-> Integer everywhere to allow null values
-    @PostMapping("/sell-id-{drinkId}-quantity-{quantity}")
-    public String sellDrink(Long drinkId, int quantity) {
+
+    @PostMapping("/sell-id={drinkId}-qnt={quantity}")
+    public String sellDrink(@PathVariable Long drinkId, @PathVariable Integer quantity) {
         return drinkService.sellDrink(drinkId, quantity);
     }
 }

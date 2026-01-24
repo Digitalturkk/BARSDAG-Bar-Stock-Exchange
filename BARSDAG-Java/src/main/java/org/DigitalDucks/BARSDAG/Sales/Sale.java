@@ -20,11 +20,15 @@ public class Sale {
     public Sale() {
     }
 
-    public Sale(Long id, Drink drink, Integer quantity) {
-        this.id = id;
+    // Automatically set saleTime before persisting
+    @PrePersist
+    protected void onCreate() {
+        this.saleTime = LocalDateTime.now();
+    }
+
+    public Sale(Drink drink, Integer quantity) {
         this.drink = drink;
         this.quantity = quantity;
-        this.saleTime = LocalDateTime.now(); // Set sale time to current time by default
     }
 
     public Long getId() {

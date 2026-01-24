@@ -38,4 +38,16 @@ public class SaleDTO {
     public void setSaleTime(LocalDateTime saleTime) {
         this.saleTime = saleTime;
     }
+
+    public Long getDrinkId() {
+        return drinkId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public LocalDateTime getSaleTime() {
+        return saleTime;
+    }
 }

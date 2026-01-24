@@ -44,4 +44,28 @@ public class DrinkDTO {
     public void setClosedPrice(Double closedPrice) {
         this.closedPrice = closedPrice;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getOpenPrice() {
+        return openPrice;
+    }
+
+    public Double getPriceRightNow() {
+        return priceRightNow;
+    }
+
+    public Double getClosedPrice() {
+        return closedPrice;
+    }
 }
