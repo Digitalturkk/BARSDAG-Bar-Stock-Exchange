@@ -3,6 +3,7 @@ package org.DigitalDucks.BARSDAG.Drinks.Services;
 import org.DigitalDucks.BARSDAG.Drinks.Drink;
 import org.DigitalDucks.BARSDAG.Drinks.DrinkDTO;
 import org.DigitalDucks.BARSDAG.Drinks.DrinkRepository;
+import org.DigitalDucks.BARSDAG.Exceptions.GlobalNotFoundException;
 import org.DigitalDucks.BARSDAG.Sales.SaleRepository;
 import org.DigitalDucks.BARSDAG.Sales.Serviсes.SaleService;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class DrinkServiceImplement implements DrinkService {
@@ -40,7 +42,8 @@ public class DrinkServiceImplement implements DrinkService {
 
     @Override
     public Drink getDrinkById(Long id) {
-        return drinkRepository.findById(id).orElse(null);
+        return drinkRepository.findById(id).orElseThrow(
+                () -> new GlobalNotFoundException("Drink with id " + id + " not found.", new NoSuchElementException()));
     }
 
     @Override
@@ -50,7 +53,11 @@ public class DrinkServiceImplement implements DrinkService {
 
     @Override
     public Drink getDrinkByName(String name) {
-        return drinkRepository.findByName(name);
+        Drink drink = drinkRepository.findByName(name);
+        if (drink == null) {
+            throw new GlobalNotFoundException("Drink with name " + name + " not found.", new NoSuchElementException());
+        }
+        return drink;
     }
 
     @Override
@@ -70,11 +77,10 @@ public class DrinkServiceImplement implements DrinkService {
     @Override
     public String sellDrink(Long drinkId, Integer quantity) {
         Drink drink = getDrinkById(drinkId);
-        // List<Sale> drinkSales = saleService.getSalesByDrinkId(drinkId);
-        // Sale latestSale = drinkSales.getLast();
 
         adjustDrinkPriceAfterPurchase(drinkId);
         saleService.createSale(drink, quantity);
+
         return "Successfully sold " + quantity + " of " + drink.getName() + "."
                 +"\nCurrent price: " + drink.getPriceRightNow();
     }
@@ -93,15 +99,6 @@ public class DrinkServiceImplement implements DrinkService {
         drink.setPriceRightNow(drink.getPriceRightNow() * 1.02);
         saveDrink(drink);
     }
-
-    //  Логические ошибки:
-    //Строка 119 — условие неполное. Когда salesInLast10Minutes < 3, цена снижается только если currentPrice >= openPrice, но это противоречиво — при низких продажах цена должна снижаться независимо от текущей цены.
-    //Строка 125 — отсутствует условие на минимальную цену для повышения. При salesInLast10Minutes > 7 цена повышается, но нет проверки на минимальную границу.
-    //Строки 114-115 — minPrice и maxPrice вычисляются, но minPrice используется только в строке 119, а maxPrice — только в строке 125. Логика может быть нарушена.
-    //Рекомендации:
-    //Переформулируйте условие в строке 119: цена должна снижаться, если продажи низкие И цена выше минимума
-    //Добавьте проверку на минимальную цену в блоке else if
-    //Рассмотрите необходимость дополнительной валидации перед сохранением
 
     @Scheduled(fixedRate = 600000) // Every 10 minutes
     private void adjustDrinkPriceAfterEvery10Minutes() {
@@ -147,6 +144,7 @@ public class DrinkServiceImplement implements DrinkService {
 
         // Sales tracking within a specific period
     private Integer getDrinkSalesInPeriod(String drinkName, LocalDateTime start, LocalDateTime end) {
-        return saleRepository.countSaleByDrinkName(drinkName, start, end);
+        Integer count = saleRepository.countSaleByDrinkName(drinkName, start, end);
+        return count != null ? count : 0;
     }
 }
