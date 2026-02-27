@@ -21,6 +21,12 @@ public class DrinkController {
         return drinks.stream().map(drinkService::convertToDTO).toList();
     }
 
+    @GetMapping("/id={drinkId}")
+    public DrinkDTO getDrinkById(@PathVariable Long drinkId) {
+        Drink drink = drinkService.getDrinkById(drinkId);
+        return drinkService.convertToDTO(drink);
+    }
+
     @PostMapping("/sell-id={drinkId}-qnt={quantity}")
     public String sellDrink(@PathVariable Long drinkId, @PathVariable Integer quantity) {
         return drinkService.sellDrink(drinkId, quantity);
