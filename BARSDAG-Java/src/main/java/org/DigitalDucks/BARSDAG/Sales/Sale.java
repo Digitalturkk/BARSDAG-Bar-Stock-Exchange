@@ -13,7 +13,7 @@ public class Sale {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "drink_id")
-    private Drink drink;
+    private Drink drink; // need to change it to orders
     private Integer quantity;
     private LocalDateTime saleTime;
 

@@ -13,8 +13,7 @@ public class OrderCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToMany
-    private List<Drink> drinks = new ArrayList<>();
-
+    private List<Drink> drinks = new ArrayList<>(); // need to create order entity to link to order cart and drinks
     private Integer quantity = 1;
 
     public OrderCart() {
