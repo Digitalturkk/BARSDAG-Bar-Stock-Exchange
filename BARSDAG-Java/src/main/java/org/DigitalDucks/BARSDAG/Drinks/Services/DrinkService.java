@@ -14,7 +14,7 @@ public interface DrinkService {
     List<Drink> getAllDrinks();
     Drink getDrinkByName(String name);
 
-    // Update operations
+    // Delete operations
     void deleteDrink(Long id);
 
     // DTO conversion
