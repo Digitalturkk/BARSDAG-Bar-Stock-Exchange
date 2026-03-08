@@ -70,4 +70,20 @@ public class SaleServiceImplement implements SaleService {
     public Integer countTotalSoldInRange(LocalDateTime start, LocalDateTime end) {
         return saleRepository.countTotalSoldInRange(start, end);
     }
+
+    @Override
+    public Integer countTotalSold() {
+        List<Sale> allSales = getAllSales();
+        return allSales.stream()
+                .mapToInt(Sale::getQuantity)
+                .sum();
+    }
+
+    @Override
+    public Integer countSoldByDrinkName(String drinkName) {
+        Integer count = saleRepository.countSaleByDrinkName(drinkName,
+                LocalDateTime.of(2000, 1, 1, 0, 0),
+                LocalDateTime.now());
+        return count != null ? count : 0;
+    }
 }

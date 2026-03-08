@@ -1,27 +1,18 @@
 package org.DigitalDucks.BARSDAG.Orders;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import org.DigitalDucks.BARSDAG.Drinks.Drink;
 
 import java.util.List;
 
-@Entity
-@Table(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrderDTO {
     private Long id;
-    @Size(max = 3)
-    @Column(nullable = false)
-    private String orderNumber; // Using String to allow for leading zeros, e.g., "001", "002", etc.
-    @OneToMany
+    private String orderNumber;
     private List<Drink> ordersDrinks;
 
-    public Order() {
+    public OrderDTO() {
     }
 
-    public Order(Long id, String orderNumber, List<Drink> ordersDrinks) {
+    public OrderDTO(Long id, String orderNumber, List<Drink> ordersDrinks) {
         this.id = id;
         this.orderNumber = orderNumber;
         this.ordersDrinks = ordersDrinks;

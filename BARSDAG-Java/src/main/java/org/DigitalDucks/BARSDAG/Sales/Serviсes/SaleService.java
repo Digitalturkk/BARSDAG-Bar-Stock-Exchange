@@ -8,14 +8,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SaleService {
+    // Create operations
+    void createSale(Drink drink, Integer quantity);
     void saveSale(Sale sale);
-    void deleteSale(Long id);
+    // Read operations
     Sale getSaleById(Long id);
     List<Sale> getAllSales();
     List<Sale> getSalesByDrinkId(Long drinkId);
-    void createSale(Drink drink, Integer quantity);
+    // Update operations
+        // Not implemented yet
+    // Delete operations
+    void deleteSale(Long id);
 
+    // DTO conversion
     SaleDTO convertToDTO(Sale sale);
 
+    // Additional methods
     Integer countTotalSoldInRange(LocalDateTime start, LocalDateTime end);
+    Integer countTotalSold();
+    Integer countSoldByDrinkName(String drinkName);
 }

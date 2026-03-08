@@ -6,14 +6,20 @@ import org.DigitalDucks.BARSDAG.Drinks.DrinkDTO;
 import java.util.List;
 
 public interface DrinkService {
+    //Create operations
     void saveDrink(Drink drink);
-    void deleteDrink(Long id);
+
+    // Read operations
     Drink getDrinkById(Long id);
     List<Drink> getAllDrinks();
-
     Drink getDrinkByName(String name);
 
+    // Update operations
+    void deleteDrink(Long id);
+
+    // DTO conversion
     DrinkDTO convertToDTO(Drink drink);
 
+    // Business logic
     String sellDrink(Long drinkId, Integer quantity);
 }

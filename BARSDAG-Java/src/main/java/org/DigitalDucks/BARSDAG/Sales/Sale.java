@@ -11,17 +11,19 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "drink_id")
-    private Drink drink; // need to change it to orders
+    private Drink drink;
+
     private Integer quantity;
+
     private LocalDateTime saleTime;
 
     public Sale() {
     }
 
-    // Automatically set saleTime before persisting
-    @PrePersist
+    @PrePersist // Automatically set saleTime before persisting
     protected void onCreate() {
         this.saleTime = LocalDateTime.now();
     }
